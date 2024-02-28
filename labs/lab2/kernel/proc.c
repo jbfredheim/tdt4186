@@ -6,6 +6,8 @@
 #include "proc.h"
 #include "defs.h"
 
+#define NUM_QUEUES 2
+
 struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];
@@ -29,9 +31,9 @@ typedef struct scheduler_impl
 
 // Register all available schedulers here
 // also update schedc, this indicates how long the SchedImpl array is
-#define SCHEDC 2
+#define SCHEDC 3
 static SchedImpl available_schedulers[SCHEDC] = {
-    {"Round Robin", &rr_scheduler, 1},{"MLFQ Sched", &mlfq_scheduler, 2}};
+    {"Round Robin", &rr_scheduler, 1},{"MLFQ Sched", &mlfq_scheduler, 2},{"MLFQ Sched 256", &mlfq_mega_scheduler, 3}};
 
 void (*sched_pointer)(void) = &rr_scheduler;
 
@@ -69,6 +71,7 @@ void procinit(void)
     {
         initlock(&p->lock, "proc");
         p->state = UNUSED;
+        p->priority = 0;
         p->kstack = KSTACK((int)(p - proc));
     }
 }
@@ -558,9 +561,68 @@ void scheduler(void)
 
 void mlfq_scheduler(void)
 {
+  struct proc *p;
+  struct cpu *c = mycpu();
+  c->proc = 0;
+  intr_on();
 
+  for (int q = 0; q < NUM_QUEUES; q++) {
+    for (p = proc; p < &proc[NPROC]; p++) {
+      acquire(&p->lock);
+      if (p->state == RUNNABLE && p->priority == q) {
+        p->state = RUNNING;
+        p->timeOfLastRun = ticks; //timestamp when process was last started
+        c->proc = p;
+        swtch(&c->context, &p->context);
+
+        if (q < NUM_QUEUES-1) {
+          p->priority++;
+        } else if ( q == NUM_QUEUES-1) {
+          p->priority = 0;
+        }
+        c->proc = 0;
+      }
+      release(&p->lock);
+    }
+  }
+  // Time based anti-starvation, doesn't seem to affect performance at all
+  //for (p = proc; p < &proc[NPROC]; p++) {
+  //  if (ticks - p->timeOfLastRun > 5) {
+  //    acquire(&p->lock);
+  //    p->priority = 0;
+  //    release(&p->lock);
+  //  }
+  //}
 }
 
+// completely useless
+void mlfq_mega_scheduler(void)
+{
+  struct proc *p;
+  struct cpu *c = mycpu();
+  c->proc = 0;
+  intr_on();
+
+  for (int q = 0; q < 256; q++) {
+    for (p = proc; p < &proc[NPROC]; p++) {
+      acquire(&p->lock);
+      if (p->state == RUNNABLE && p->priority == q) {
+        p->state = RUNNING;
+        c->proc = p;
+        swtch(&c->context, &p->context);
+        if (q < 255) {
+          p->priority++;
+        } else if ( q == 255) {
+          p->priority = 0;
+        }
+        c->proc = 0;
+      }
+      release(&p->lock);
+
+    }
+  }
+
+}
 void rr_scheduler(void)
 {
     struct proc *p;
