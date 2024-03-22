@@ -186,7 +186,7 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
     if(do_free){
       uint64 pa = PTE2PA(*pte);
       decref((void*)pa);
-      kfree((void*)pa);
+      //kfree((void*)pa);
     }
     *pte = 0;
   }
@@ -280,11 +280,6 @@ freewalk(pagetable_t pagetable)
       uint64 child = PTE2PA(pte);
       freewalk((pagetable_t)child);
       pagetable[i] = 0;
-    } else if(pte & PTE_V){
-      char *pa = (char*)PTE2PA(pte);
-      decref(pa);
-      if (getrefcnt(pa) == 0)
-        kfree(pa);
     }
   }
   kfree((void*)pagetable);
@@ -295,8 +290,9 @@ freewalk(pagetable_t pagetable)
 void
 uvmfree(pagetable_t pagetable, uint64 sz)
 {
-  if(sz > 0)
+  if(sz > 0) {
     uvmunmap(pagetable, 0, PGROUNDUP(sz)/PGSIZE, 1);
+    }
   freewalk(pagetable);
 }
 

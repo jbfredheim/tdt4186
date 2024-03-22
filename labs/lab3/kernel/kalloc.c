@@ -51,7 +51,6 @@ void freerange(void *pa_start, void *pa_end) {
 void incref(void *pa)
 {
     struct run *r;
-    printf("incref\n");
 
     r = (struct run *)pa;
     acquire(&kmem.lock);
@@ -62,7 +61,6 @@ void incref(void *pa)
 void decref(void *pa)
 {
     struct run *r;
-    printf("decref\n");
 
     r = (struct run *)pa;
     acquire(&kmem.lock);
@@ -73,7 +71,6 @@ void decref(void *pa)
 int getrefcnt(void *pa)
 {
     struct run *r;
-    printf("getrefcnt\n");
 
     r = (struct run *)pa;
     return r->ref_count;
@@ -96,17 +93,15 @@ void kfree(void *pa)
     r = (struct run *)pa;
 
     acquire(&kmem.lock);
-    printf("A: ref_count: %d\n", r->ref_count);
     if (r->ref_count > 0){
       r->ref_count--; // decrement the reference count
-    if(r->ref_count <= 0)
-        printf("B: ref_count: %d\n", r->ref_count);
-    if (r->ref_count == 0) { //if the pte is no longer in use
+      if(r->ref_count <= 0)
+      if (r->ref_count <= 0) { //if the pte is no longer in use
         r->next = kmem.freelist; 
         kmem.freelist = r;
         FREE_PAGES++;
         memset(pa, 1, PGSIZE);
-    }
+      }
     }
     release(&kmem.lock);
 }

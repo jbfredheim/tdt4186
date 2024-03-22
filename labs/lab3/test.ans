@@ -35,3 +35,65 @@ riscv64-linux-gnu-objdump -S kernel/kernel > kernel/kernel.asm
 riscv64-linux-gnu-objdump -t kernel/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > kernel/kernel.sym
 make[1]: Leaving directory '/home/joachim/dev/tdt4186/labs/lab3'
 == Test [MANDATORY] vatopa exists == 
+$ make qemu-gdb
+[MANDATORY] vatopa exists: [32mOK[0m (1.9s) 
+== Test [MANDATORY] vatopa 0 == 
+$ make qemu-gdb
+[MANDATORY] vatopa 0: [32mOK[0m (0.7s) 
+== Test [MANDATORY] vatopa 0 1 matches == 
+$ make qemu-gdb
+[32m			Matching OK[0m
+[MANDATORY] vatopa 0 1 matches: [32mOK[0m (1.1s) 
+== Test [MANDATORY] cowtest no crash == 
+$ make qemu-gdb
+Timeout! [MANDATORY] cowtest no crash: [31mFAIL[0m (30.9s) 
+    ...
+         [prnt] v1 --> 16102
+         kernel/kalloc.c@kalloc:115
+    [31mBAD [0m panic: assert failed
+         qemu-system-riscv64: terminating on signal 15 from pid 71985 (make)
+    unexpected lines in output
+    QEMU output saved to xv6.out.
+== Test [MANDATORY] cowtest 1 match addresses == 
+$ make qemu-gdb
+Timeout! [MANDATORY] cowtest 1 match addresses: [31mFAIL[0m (30.1s) 
+    [32mGOOD[0m *** Now run 'gdb' in another window.
+         
+         xv6 kernel is booting
+    ...
+         ----- Test case 1 -----
+         [prnt] v1 --> 16102
+         kernel/kalloc.c@kalloc:115
+         panic: assert failed
+         qemu-system-riscv64: terminating on signal 15 from pid 72135 (make)
+    [31mMISSING[0m '^\[prnt\] v4 --> (\d+)$'
+    QEMU output saved to xv6.out.
+== Test [MANDATORY] cowtest 2 match addresses == 
+$ make qemu-gdb
+Timeout! [MANDATORY] cowtest 2 match addresses: [31mFAIL[0m (30.2s) 
+    [32mGOOD[0m *** Now run 'gdb' in another window.
+         
+         xv6 kernel is booting
+    ...
+         ----- Test case 2 -----
+         [prnt] v1 --> 16102
+         kernel/kalloc.c@kalloc:115
+         panic: assert failed
+         qemu-system-riscv64: terminating on signal 15 from pid 72286 (make)
+    [31mMISSING[0m '^\[prnt\] v5 --> (\d+)$'
+    QEMU output saved to xv6.out.
+== Test [MANDATORY] cowtest 3 match addresses == 
+$ make qemu-gdb
+Timeout! [MANDATORY] cowtest 3 match addresses: [31mFAIL[0m (30.1s) 
+    [32mGOOD[0m *** Now run 'gdb' in another window.
+         
+         xv6 kernel is booting
+    ...
+         ----- Test case 3 -----
+         [prnt] v1 --> 16102
+         kernel/kalloc.c@kalloc:115
+         panic: assert failed
+         qemu-system-riscv64: terminating on signal 15 from pid 72438 (make)
+    [31mMISSING[0m '^\[prnt\] v6 --> (\d+)$'
+    QEMU output saved to xv6.out.
+== Test [MANDATORY] cowtest 4 match addresses == 

@@ -66,7 +66,7 @@ usertrap(void)
 
     syscall();
   } 
-  if (r_scause() == 15) {
+  else if (r_scause() == 15) {
     // handle page fault
     uint64 va = PGROUNDDOWN(r_stval()); // find start of failing page address
     printf("stval %p\n", va);
@@ -190,10 +190,8 @@ kerneltrap()
   if(which_dev == 2 && myproc() != 0 && myproc()->state == RUNNING)
     yield();
 
-goto end;
   // the yield() may have caused some traps to occur,
   // so restore trap registers for use by kernelvec.S's sepc instruction.
-end:
   w_sepc(sepc);
   w_sstatus(sstatus);
 }
