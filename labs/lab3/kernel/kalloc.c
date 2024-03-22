@@ -36,34 +36,47 @@ void kinit()
     MAX_PAGES = FREE_PAGES;
 }
 
-void freerange(void *pa_start, void *pa_end)
-{
+void freerange(void *pa_start, void *pa_end) {
     char *p;
     p = (char *)PGROUNDUP((uint64)pa_start);
-    for (; p + PGSIZE <= (char *)pa_end; p += PGSIZE)
-    {
-        kfree(p);
+    for (; p + PGSIZE <= (char *)pa_end; p += PGSIZE) {
+        struct run *r = (struct run*)p;
+        r->ref_count = 0;  // Initialize reference count to 0
+        r->next = kmem.freelist;
+        kmem.freelist = r;
+        FREE_PAGES++;
     }
 }
 
-void incref(void *pa) {
-    struct run *r = (struct run *)pa;
+void incref(void *pa)
+{
+    struct run *r;
+    printf("incref\n");
+
+    r = (struct run *)pa;
     acquire(&kmem.lock);
     r->ref_count++;
     release(&kmem.lock);
 }
 
-void decref(void *pa) {
-    struct run *r = (struct run *)pa;
+void decref(void *pa)
+{
+    struct run *r;
+    printf("decref\n");
+
+    r = (struct run *)pa;
     acquire(&kmem.lock);
     r->ref_count--;
-    if (r->ref_count <= 0) {
-        r->next = kmem.freelist;
-        kmem.freelist = r;
-        FREE_PAGES++;
-        memset(pa, 1, PGSIZE);
-    }
     release(&kmem.lock);
+}
+
+int getrefcnt(void *pa)
+{
+    struct run *r;
+    printf("getrefcnt\n");
+
+    r = (struct run *)pa;
+    return r->ref_count;
 }
 
 // Free the page of physical memory pointed at by pa,
@@ -78,17 +91,22 @@ void kfree(void *pa)
 
     if (((uint64)pa % PGSIZE) != 0 || (char *)pa < end || (uint64)pa >= PHYSTOP)
         panic("kfree");
+        
 
     r = (struct run *)pa;
 
     acquire(&kmem.lock);
-    r->ref_count--; // decrement the reference count
-    if (r->ref_count <= 0) { //if the pte is no longer in use
+    printf("A: ref_count: %d\n", r->ref_count);
+    if (r->ref_count > 0){
+      r->ref_count--; // decrement the reference count
+    if(r->ref_count <= 0)
+        printf("B: ref_count: %d\n", r->ref_count);
+    if (r->ref_count == 0) { //if the pte is no longer in use
         r->next = kmem.freelist; 
         kmem.freelist = r;
         FREE_PAGES++;
-        memset(pa, 1, PGSIZE); // only fill with junk if the page is no longer
-                               // in use
+        memset(pa, 1, PGSIZE);
+    }
     }
     release(&kmem.lock);
 }

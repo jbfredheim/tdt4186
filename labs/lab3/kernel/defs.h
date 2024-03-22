@@ -73,6 +73,7 @@ void kfree(void *);
 void kinit(void);
 void incref(void *);
 void decref(void *);
+int getrefcnt(void *);
 
 // log.c
 void initlog(int, struct superblock *);

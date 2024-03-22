@@ -482,6 +482,11 @@ void exit(int status)
 
     acquire(&p->lock);
 
+    if (p->pagetable){
+      uvmfree(p->pagetable, p->sz);
+      p->pagetable = 0;
+    }
+
     p->xstate = status;
     p->state = ZOMBIE;
 
@@ -893,6 +898,9 @@ int vfork(void)
             panic("make_pages_readonly: pte should exist");
         }
         *pte &= ~PTE_W; // Clear the PTE_W bit to make it read-only
+        
+        char *pa = (char *)PTE2PA(*pte);
+        incref(pa);
     }
 
 

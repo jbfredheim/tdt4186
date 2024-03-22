@@ -185,6 +185,7 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
       panic("uvmunmap: not a leaf");
     if(do_free){
       uint64 pa = PTE2PA(*pte);
+      decref((void*)pa);
       kfree((void*)pa);
     }
     *pte = 0;
@@ -280,6 +281,10 @@ freewalk(pagetable_t pagetable)
       freewalk((pagetable_t)child);
       pagetable[i] = 0;
     } else if(pte & PTE_V){
+      char *pa = (char*)PTE2PA(pte);
+      decref(pa);
+      if (getrefcnt(pa) == 0)
+        kfree(pa);
       panic("freewalk: leaf");
     }
   }
