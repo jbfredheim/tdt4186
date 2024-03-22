@@ -35,14 +35,3 @@ riscv64-linux-gnu-objdump -S kernel/kernel > kernel/kernel.asm
 riscv64-linux-gnu-objdump -t kernel/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > kernel/kernel.sym
 make[1]: Leaving directory '/home/joachim/dev/tdt4186/labs/lab3'
 == Test [MANDATORY] vatopa exists == 
-$ make qemu-gdb
-Timeout! [MANDATORY] vatopa exists: [31mFAIL[0m (31.9s) 
-    ...
-         *** Now run 'gdb' in another window.
-         
-         xv6 kernel is booting
-         
-         qemu-system-riscv64: terminating on signal 15 from pid 9261 (make)
-    [31mMISSING[0m 'Usage\: vatopa virtual_address \[pid\]'
-    QEMU output saved to xv6.out.
-== Test [MANDATORY] vatopa 0 == 

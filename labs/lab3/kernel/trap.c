@@ -66,17 +66,40 @@ usertrap(void)
 
     syscall();
   } 
-  //else if(r_scause() == 15){
-    //uint64 stval = r_stval();
-    // TODO: check if the faulting address is a valid address
-    // if not, kill the process
-    // if the faulting address is a valid address, allocate a page for it
-    // and map it to the faulting address
-    // if the allocation fails, kill the process
-    // if the allocation succeeds, return to user space
+  if (r_scause() == 15) {
+    // handle page fault
+    uint64 va = PGROUNDDOWN(r_stval()); // find start of failing page address
+    printf("stval %p\n", va);
+    pte_t *pte = walk(myproc()->pagetable, va, 0); // find the page table entry for the failing page
+    printf("pte %p\n", pte);
+    printf("PTE_V %p\n", PTE_V);
+    if (pte == 0) { // if the page table entry is not found, kill the process
+      printf("pte not found\n");
+      myproc()->killed = 1;
+    }
+    // allocate a new page
+    if ((*pte & PTE_V) && (*pte & PTE_U) && (*pte & PTE_RSW)) {
+      uint flags = PTE_FLAGS(*pte);
+      
+      flags |= PTE_W;
+      flags &= (~PTE_RSW);
+
+      char *mem = kalloc(); // allocate a new page
+      char *pa = (char *)PTE2PA(*pte); // find the physical address of the failing page
+      memmove(mem, pa, PGSIZE); // copy the contents of the failing page to the new page
+      uvmunmap(p->pagetable, va, PGSIZE, 0);
+      decref(pa); // decrement the reference count of the failing page
+      if (mappages(p->pagetable, va, PGSIZE, (uint64)mem, flags) != 0) { // map the new page to the virtual address
+        kfree(mem); // free the new page if mapping fails
+        myproc()->killed = 1;
+        printf("mapping failed\n");
+      }
+
+    }
 
 
-  //}
+
+  }
   else if((which_dev = devintr()) != 0){
     // ok
   } else {
@@ -167,8 +190,10 @@ kerneltrap()
   if(which_dev == 2 && myproc() != 0 && myproc()->state == RUNNING)
     yield();
 
+goto end;
   // the yield() may have caused some traps to occur,
   // so restore trap registers for use by kernelvec.S's sepc instruction.
+end:
   w_sepc(sepc);
   w_sstatus(sstatus);
 }

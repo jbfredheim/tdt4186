@@ -1,0 +1,385 @@
+qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp 3 -nographic -global virtio-mmio.force-legacy=false -drive file=fs.img,if=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0
+
+xv6 kernel is booting
+
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+hart 2 starting
+hart 1 starting
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+decref
+A: ref_count: 1430
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 84215045
+init: starting sh
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+kalloc
+C: ref_count: 1
+decref
+A: ref_count: 268492873
+decref
+A: ref_count: -1
+decref
+A: ref_count: -1
+decref
+A: ref_count: -1
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 0
+A: ref_count: 84215045
+$ kQEMU: Terminated
+

@@ -285,7 +285,6 @@ freewalk(pagetable_t pagetable)
       decref(pa);
       if (getrefcnt(pa) == 0)
         kfree(pa);
-      panic("freewalk: leaf");
     }
   }
   kfree((void*)pagetable);
