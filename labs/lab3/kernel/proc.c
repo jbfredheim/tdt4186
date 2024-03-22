@@ -449,13 +449,6 @@ void exit(int status)
     if (p == initproc)
         panic("init exiting");
 
-    if (p->parent && p->parent->chan == p) {
-      acquire(&p->parent->lock);
-      p->parent->state = RUNNABLE;
-      p->parent->chan = 0;
-      release(&p->parent->lock);
-    }
-
     // Close all open files.
     for (int fd = 0; fd < NOFILE; fd++)
     {
@@ -842,86 +835,4 @@ void schedset(int id)
     }
     sched_pointer = available_schedulers[id].impl;
     printf("Scheduler successfully changed to %s\n", available_schedulers[id].name);
-}
-
-uint64 va2pa(uint64 virtual_address, int pid) 
-{
-  pagetable_t pt = myproc()->pagetable;
-  struct proc *p;
-
-  if (pid != 0){ //If a PID was provided by the user
-    int found = 0;
-    for (p = proc; p < &proc[NPROC]; p++) { //Iterate through all processes
-      acquire(&p->lock);
-      if (pid == p->pid){ //Check if PID matches
-        pt = p->pagetable;//Set PT to corresponding process
-        found = 1;
-      }
-      release(&p->lock);
-    }
-    if (!found) { //If no process with matching PID is found, return 0
-      return 0;
-    }
-  } 
-  //Find physical address in pagetable that matches virtual address and return result
-  return walkaddr(pt, virtual_address); 
-}
-
-//copied fork from above and made adjustments as necessary
-//Biggest changes are:
-// * replace uvmcopy with a straight mapping
-int vfork(void)
-{
-    int i, pid;
-    struct proc *np;
-    struct proc *p = myproc();
-
-    // Allocate process.
-    if ((np = allocproc()) == 0)
-    {
-        return -1;
-    }
-
-    // map parent's address space to child
-    np->pagetable = p->pagetable;
-    np->sz = p->sz;
-
-    // make pagetable read only
-    for (uint64 addr = 0; addr < p->sz; addr += PGSIZE) {
-        pte_t *pte = walk(p->pagetable, addr, 0);
-        if (pte == 0) {
-            panic("make_pages_readonly: pte should exist");
-        }
-        *pte &= ~PTE_W; // Clear the PTE_W bit to make it read-only
-    }
-
-
-    // copy saved user registers.
-    *(np->trapframe) = *(p->trapframe);
-
-    // Cause fork to return 0 in the child.
-    np->trapframe->a0 = 0;
-
-    // increment reference counts on open file descriptors.
-    for (i = 0; i < NOFILE; i++)
-        if (p->ofile[i])
-            np->ofile[i] = filedup(p->ofile[i]);
-    np->cwd = idup(p->cwd);
-
-    safestrcpy(np->name, p->name, sizeof(p->name));
-
-    pid = np->pid;
-
-    // Suspend parent process for the duration of child's lifecycle
-    acquire(&p->lock);
-    p->state = SLEEPING;
-    p->chan = np;
-    release(&p->lock);
-
-    acquire(&np->lock);
-    np->parent = p;
-    np->state = RUNNABLE;
-    release(&np->lock);
-
-    return pid;
 }

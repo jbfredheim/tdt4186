@@ -65,19 +65,7 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } 
-  //else if(r_scause() == 15){
-    //uint64 stval = r_stval();
-    // TODO: check if the faulting address is a valid address
-    // if not, kill the process
-    // if the faulting address is a valid address, allocate a page for it
-    // and map it to the faulting address
-    // if the allocation fails, kill the process
-    // if the allocation succeeds, return to user space
-
-
-  //}
-  else if((which_dev = devintr()) != 0){
+  } else if((which_dev = devintr()) != 0){
     // ok
   } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
@@ -94,7 +82,6 @@ usertrap(void)
 
   usertrapret();
 }
-
 
 //
 // return to user space

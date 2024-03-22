@@ -20,7 +20,6 @@ extern char end[]; // first address after kernel.
 struct run
 {
     struct run *next;
-    int ref_count;
 };
 
 struct
@@ -46,26 +45,6 @@ void freerange(void *pa_start, void *pa_end)
     }
 }
 
-void incref(void *pa) {
-    struct run *r = (struct run *)pa;
-    acquire(&kmem.lock);
-    r->ref_count++;
-    release(&kmem.lock);
-}
-
-void decref(void *pa) {
-    struct run *r = (struct run *)pa;
-    acquire(&kmem.lock);
-    r->ref_count--;
-    if (r->ref_count <= 0) {
-        r->next = kmem.freelist;
-        kmem.freelist = r;
-        FREE_PAGES++;
-        memset(pa, 1, PGSIZE);
-    }
-    release(&kmem.lock);
-}
-
 // Free the page of physical memory pointed at by pa,
 // which normally should have been returned by a
 // call to kalloc().  (The exception is when
@@ -79,17 +58,15 @@ void kfree(void *pa)
     if (((uint64)pa % PGSIZE) != 0 || (char *)pa < end || (uint64)pa >= PHYSTOP)
         panic("kfree");
 
+    // Fill with junk to catch dangling refs.
+    memset(pa, 1, PGSIZE);
+
     r = (struct run *)pa;
 
     acquire(&kmem.lock);
-    r->ref_count--; // decrement the reference count
-    if (r->ref_count <= 0) { //if the pte is no longer in use
-        r->next = kmem.freelist; 
-        kmem.freelist = r;
-        FREE_PAGES++;
-        memset(pa, 1, PGSIZE); // only fill with junk if the page is no longer
-                               // in use
-    }
+    r->next = kmem.freelist;
+    kmem.freelist = r;
+    FREE_PAGES++;
     release(&kmem.lock);
 }
 
@@ -104,10 +81,8 @@ kalloc(void)
 
     acquire(&kmem.lock);
     r = kmem.freelist;
-    if (r) {
+    if (r)
         kmem.freelist = r->next;
-        r->ref_count = 1;
-    }
     release(&kmem.lock);
 
     if (r)

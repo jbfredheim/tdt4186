@@ -30,12 +30,6 @@ sys_fork(void)
 }
 
 uint64
-sys_vfork(void)
-{
-  return vfork();
-}
-
-uint64
 sys_wait(void)
 {
     uint64 p;
@@ -87,7 +81,7 @@ sys_kill(void)
     return kill(pid);
 }
 
-// return how many clock tick interrupts have occurre
+// return how many clock tick interrupts have occurred
 // since start.
 uint64
 sys_uptime(void)
@@ -125,11 +119,8 @@ uint64 sys_schedset(void)
 
 uint64 sys_va2pa(void)
 {
-    uint64 virtual_address = 0;
-    int pid = 0;
-    argaddr(0, &virtual_address);
-    argint(1, &pid);
-    return va2pa((uint64)virtual_address, (int)pid);
+    printf("TODO: IMPLEMENT ME [%s@%s (line %d)]", __func__, __FILE__, __LINE__);
+    return 0;
 }
 
 uint64 sys_pfreepages(void)

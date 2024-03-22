@@ -71,8 +71,6 @@ void ramdiskrw(struct buf *);
 void *kalloc(void);
 void kfree(void *);
 void kinit(void);
-void incref(void *);
-void decref(void *);
 
 // log.c
 void initlog(int, struct superblock *);
@@ -95,7 +93,6 @@ void printfinit(void);
 int cpuid(void);
 void exit(int);
 int fork(void);
-int vfork(void);
 int growproc(int);
 void proc_mapstacks(pagetable_t);
 pagetable_t proc_pagetable(struct proc *);
@@ -120,7 +117,6 @@ int either_copyin(void *dst, int user_src, uint64 src, uint64 len);
 void procdump(void);
 // We allocate memory in the callers memory space
 struct user_proc *ps(uint8 start, uint8 count);
-uint64 va2pa(uint64 virtual_address, int pid);
 void schedls(void);
 void schedset(int id);
 
@@ -204,4 +200,3 @@ void virtio_disk_intr(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
-
